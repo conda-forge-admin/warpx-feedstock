@@ -2,7 +2,7 @@ schema_version: 1
 
 context:
   name: warpx
-  version: "26.07"
+  version: "26.08"
   build: 0
 
 package:
@@ -11,7 +11,7 @@ package:
 
 source:
   url: https://github.com/BLAST-WarpX/warpx/archive/${{ version }}.tar.gz
-  sha256: 960d2387dfc08735f89e87060b4ff9e702b4cc3aae7e930ad8adbdd09b1eb4b2
+  sha256: fa430d90de6d7d51811f7eb170797f55ccf0e7a344bfbc1c81f0fdba53986530
 
 build:
   skip:
@@ -32,10 +32,11 @@ requirements:
     # Injects -march=x86-64-v3 and adds an __archspec run-export so the package
     # only installs on v3-capable CPUs. This activation package is __unix-only;
     # Windows sets the flag in build.bat and adds the __archspec guard in run.
-    - if: unix and x86_64
-      then: x86_64-microarch-level ==${{ microarch_level | default(1) }}
     - if: unix
-      then: make
+      then:
+        - if: x86_64
+          then: x86_64-microarch-level ==${{ microarch_level | default(1) }}
+        - make
     - if: win
       then:
         - clang
